@@ -1,15 +1,29 @@
-CC=arm-none-eabi-
-MARCH=cortex-m4
-CFLASS= -c -mcpu=$(MARCH) -mthumb -sdt=gnu11 -O0 -Wall
-LDFLAGS= -T LinkerScript.ld -nostdlibf -Map=app.map
+# Compiler and Linker
+CC = arm-none-eabi-gcc
+LD = arm-none-eabi-ld
 
-all: app.elf
+# Compiler Flags
+CFLAGS = -mcpu=cortex-m4 -mthumb -std=gnu11 -Wall
+LDFLAGS = -T LinkerScript.ld
 
-%.o: %.c 
-	$(CC)gcc $(CFLASS) $^ -o $@
+# Source files
+SRC = main.c Startup_STM32F446RE.c
 
-app.elf: main.o Startup_STM32F446RE.o
-	$(CC)ld $(LDFLAGS) $^ -o $@
+# Object files (compiled from source files)
+OBJ = $(SRC:.c=.o)
+
+# Output target
+TARGET = final
+
+all: $(TARGET)
+
+$(TARGET): $(OBJ)
+	$(LD) $(LDFLAGS) $^ -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf *.o *.elf
+	rm -f $(OBJ) $(TARGET)
+
+.PHONY: all clean

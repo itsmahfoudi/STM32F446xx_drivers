@@ -5,10 +5,10 @@
 */
 
 /* Define the entry point*/
-ENTRY(reset_handler)
+ENTRY(Reset_Handler)
 
 /*Highest address of the user mode stack*/
-_sstack = ORIGIN(SRAM) + LENGTH(SRAM)
+_sstack = ORIGIN(SRAM) + LENGTH(SRAM);
 
 /*Minimum and maximum size of user stack*/
 _Min_HEAP_size = 0x200; /*Required amount of HEAP*/
@@ -16,8 +16,8 @@ _Min_STACK_size = 0x400; /*Required amount of STACK*/
 
 
 MEMORY {
-    SRAM  (rwx) : ORIGIN = 0x20000000, LENGTH = 128KB
-    FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 512kB
+    SRAM  (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
+    FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 512K
 }
 
 SECTIONS {
