@@ -8,7 +8,7 @@
 ENTRY(reset_handler)
 
 /*Highest address of the user mode stack*/
-_end_stack = ORIGIN(SRAM) + LENGTH(SRAM)
+_sstack = ORIGIN(SRAM) + LENGTH(SRAM)
 
 /*Minimum and maximum size of user stack*/
 _Min_HEAP_size = 0x200; /*Required amount of HEAP*/
@@ -39,7 +39,7 @@ SECTIONS {
         /*This defines a symbol _sdata and assigns it the value of the current memory address (.), effectively marking the start of the .text section*/
         _stext = .;
         *(.text)
-        *(.text*)
+        *(.text*) 
         /*This defines a symbol _edata and assigns it the value of the current memory address (.), effectively marking the end of the .text section*/
         _etext = .;
         . = ALIGN(4);
