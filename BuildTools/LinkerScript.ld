@@ -36,41 +36,22 @@ SECTIONS {
         /*sets the current location counter (.) to the nearest memory address that is a multiple of 4.*/
         /*to ensure that the start, end, and contents of the .data section are aligned to 4-byte boundaries*/
         . = ALIGN(4); 
-        /*This defines a symbol _sdata and assigns it the value of the current memory address (.), effectively marking the start of the .text section*/
+        /*This defines a symbol _stext and assigns it the value of the current memory address (.), effectively marking the start of the .text section*/
         _stext = .;
         *(.text)
-        *(.text*) 
-        /*This defines a symbol _edata and assigns it the value of the current memory address (.), effectively marking the end of the .text section*/
+        *(.text*)
+        *(.glue_7)
+        *(.glue_7t)
+        *(.eh_frame)
+
+        KEEP(*(.init))
+        KEEP(*(.fini))
+
+
+        /*This defines a symbol _etext and assigns it the value of the current memory address (.), effectively marking the end of the .text section*/
+        . = ALIGN(4);
         _etext = .;
-        . = ALIGN(4);
     } >FLASH
-
-    /*define a symbol _sidata and assign it the load memory address (LMA) of the .data section*/
-    _sidata = LOADADDR(.data);
-
-    /*.data section,  initialized data section into RAM(SRAM) memory*/
-    .data :
-    {
-        . = ALIGN(4);
-        _sdata = .;
-        *(.data)
-        *(.data*)
-        _edata = .;
-        . = ALIGN(4);
-    } >SRAM AT >FLASH
-
-    /*.bss section, uninitialized data section into RAM(SRAM) memory*/
-    /*NOLOAD specify that the .bss section should be defined, but it should not be loaded from the input files or the program binary.*/
-    .bss (NOLOAD) :
-    {
-        . = ALIGN(4);
-        _sbss = .;
-        *(.bss)
-        *(.bss*)
-        *(COMMON)
-        _ebss = .;
-        . = ALIGN(4);  .
-    } >SRAM
 
     /*.rodata section, constant data that program uses but does not modify during its execution.*/
     .rodata :
@@ -83,10 +64,40 @@ SECTIONS {
         . = ALIGN(4);        
     } >FLASH
 
+    /*define a symbol _sidata and assign it the load memory address (LMA) of the .data section*/
+    _sidata = LOADADDR(.data);
+
+    /*.data section,  initialized data section into RAM(SRAM) memory*/
+    .data :
+    {
+        . = ALIGN(4);
+        _sdata = .;
+        *(.data)
+        *(.data*)
+        . = ALIGN(4);
+        _edata = .;
+    } >SRAM AT >FLASH
+
+    /*.bss section, uninitialized data section into RAM(SRAM) memory*/
+    /*NOLOAD specify that the .bss section should be defined, but it should not be loaded from the input files or the program binary.*/
+    . = ALIGN(4);
+    .bss (NOLOAD) :
+    {
+        . = ALIGN(4);
+        _sbss = .;
+        *(.bss)
+        *(.bss*)
+        *(COMMON)
+        . = ALIGN(4);
+        _ebss = .;
+    } >SRAM
+
     /*.user_heap_stack section used to check that there is enough RAM(SRAM) memory*/
     ._user_heap_stack :
     {
         . = ALIGN(8);
+        PROVIDE( end = .);
+        PROVIDE( _end = .);
         . = . + _Min_HEAP_size;
         . = . + _Min_STACK_size;
         . = ALIGN(8);
