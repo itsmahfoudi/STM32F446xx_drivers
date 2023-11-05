@@ -226,14 +226,14 @@ void Reset_Handler(void){
   MemSrcAddr = (uint32_t *)&_sdata;
   //Loop until the data transfer is complete
   for (uint32_t count=0; count < section_size; count++) {
-    *MemDestAddr++ = *MemSrcAddr++;
+      *(MemDestAddr)++ = *(MemSrcAddr)++;
   }
 
   //Initialize the bss section with 0 
   section_size = &_ebss - &_sbss;
   MemDestAddr = (uint32_t *)&_sbss;
   for (uint32_t count =0; count < section_size; count++) {
-      *MemDestAddr = 0;
+      *(MemDestAddr)++ = 0;
   }
   
   //call the main the function
